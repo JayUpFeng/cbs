@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinjike.cbs.mapper.BasicInfoMapper">
+    <select id="pageList" resultType="com.jinjike.cbs.model.BasicInfo">
+        SELECT *
+        FROM
+        basic_info md
+        <where>
+            <if test="orderNo !=null and orderNo != ''">
+                md.order_no like "%"#{orderNo}"%"
+            </if>
+            <if test="vin !=null and vin != ''">
+                and md.vin like "%"#{vin}"%"
+            </if>
+        </where>
+        ORDER BY md.id DESC
+    </select>
+</mapper>

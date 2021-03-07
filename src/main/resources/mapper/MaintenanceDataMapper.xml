@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jinjike.cbs.mapper.MaintenanceDataMapper">
+    <select id="pageList" resultType="com.jinjike.cbs.model.MaintenanceData">
+        SELECT id,order_no,brand,model_name,series_name,vin
+        FROM
+        maintenance_data md
+        <where>
+            <if test="orderNo !=null and orderNo != ''">
+                md.order_no like "%"#{orderNo}"%"
+            </if>
+            <if test="vin !=null and vin != ''">
+                and md.vin like "%"#{vin}"%"
+            </if>
+        </where>
+        ORDER BY md.id ASC
+    </select>
+</mapper>
