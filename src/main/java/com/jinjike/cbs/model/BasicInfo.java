@@ -132,6 +132,8 @@ public class BasicInfo extends Model {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
+    //是否正常启动:0:不正常1：正常
+    private Integer isStart;
 
 
 }

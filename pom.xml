@@ -81,6 +81,18 @@
             <artifactId>com.chaboshi.api.sign</artifactId>
             <version>0.0.3-SNAPSHOT</version>
         </dependency>
+        <!-- redis -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>3.7.5</version>
+        </dependency>
+        <!--excel导入导出-->
+        <dependency>
+            <groupId>cn.afterturn</groupId>
+            <artifactId>easypoi-web</artifactId>
+            <version>4.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>

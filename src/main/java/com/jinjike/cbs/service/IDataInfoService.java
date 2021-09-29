@@ -17,4 +17,6 @@ import java.util.Map;
 public interface IDataInfoService extends IService<DataInfo> {
 
     List<DataInfo> createDataInfo(Map<String, Object> detectionDataMap, Integer detectionDataId, boolean isUpdate);
+
+    void delPic(String json);
 }

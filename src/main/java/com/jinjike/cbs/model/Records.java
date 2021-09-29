@@ -1,5 +1,6 @@
 package com.jinjike.cbs.model;
 
+import cn.afterturn.easypoi.excel.annotation.Excel;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -21,6 +22,7 @@ public class Records extends Model {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+    @Excel(name = "订单编号")
     private String orderNo;
     private String vin;
     @TableField(exist = false)

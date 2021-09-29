@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 9091
   servlet:
     context-path: /
 
@@ -14,7 +14,10 @@ spring:
     time-zone: GMT+8
     serialization:
       write-dates-as-timestamps: false
-
+  redis:
+    host: 127.0.0.1
+    password: zh1234
+    port: 6379
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
@@ -33,3 +36,4 @@ logging:
   file:
     path: D:/work
 env: true
+excelPath: D:/work

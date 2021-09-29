@@ -1,14 +1,22 @@
 package com.jinjike.cbs.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.jinjike.cbs.common.Page;
+import com.jinjike.cbs.common.ResponseData;
+import com.jinjike.cbs.mapper.RiskControlDataMapper;
+import com.jinjike.cbs.mapper.ValuationDataMapper;
 import com.jinjike.cbs.model.BasicInfo;
 import com.jinjike.cbs.mapper.BasicInfoMapper;
+import com.jinjike.cbs.model.RiskControlData;
+import com.jinjike.cbs.model.ValuationData;
 import com.jinjike.cbs.service.IBasicInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,6 +35,10 @@ public class BasicInfoServiceImpl extends ServiceImpl<BasicInfoMapper, BasicInfo
 
     @Autowired
     private BasicInfoMapper basicInfoMapper;
+    @Autowired
+    private ValuationDataMapper valuationDataMapper;
+    @Autowired
+    private RiskControlDataMapper riskControlDataMapper;
     @Override
     public BasicInfo createBasicInfo(Map<String, Object> detectionDataMap, Integer detectionDataId,boolean isUpdate,String orderNo,String dealerBuyPrice) {
         Map<String, Object> basicInfoMap = (Map<String, Object>) detectionDataMap.get("basicInfo");
@@ -92,5 +104,73 @@ public class BasicInfoServiceImpl extends ServiceImpl<BasicInfoMapper, BasicInfo
     @Override
     public IPage<BasicInfo> pageList(Page<BasicInfo> objectPage, String orderNo, String vin) {
         return basicInfoMapper.pageList(objectPage,orderNo,vin);
+    }
+    @Override
+    @Transactional
+    public ResponseData updateBasicInfo(String json) {
+        Map<String, Object> parse = (Map<String, Object>) JSONObject.parse(json);
+        if (parse != null) {
+            String orderNo = (String) parse.get("orderNo");
+            if (StringUtils.isNoneBlank(orderNo)) {
+                //修改basicInfo数据
+                String grade = (String) parse.get("grade");
+                String dealerBuyPrice = (String) parse.get("dealerBuyPrice");
+                Object watch =  parse.get("watchMile");
+                String modelName = (String) parse.get("modelName");
+                BigDecimal watchMile=null;
+                if (watch instanceof Integer){
+                    watchMile=new BigDecimal(Integer.parseInt(watch.toString()));
+                }
+                if (watch instanceof BigDecimal){
+                    watchMile=(BigDecimal)watch;
+                }
+                Integer isStart = (Integer) parse.get("isStart");
+                BasicInfo basicInfo = getOne(new LambdaQueryWrapper<BasicInfo>().eq(BasicInfo::getOrderNo, orderNo));
+                if (basicInfo != null) {
+                    if (StringUtils.isNoneBlank(grade)) {
+                        basicInfo.setGrade(grade);
+                    }
+                    if (StringUtils.isNoneBlank(dealerBuyPrice)) {
+                        basicInfo.setDealerBuyPrice(dealerBuyPrice);
+                    }
+                    if (StringUtils.isNoneBlank(modelName)) {
+                        basicInfo.setModelName(modelName);
+                    }
+                    if (watchMile!=null){
+                        basicInfo.setWatchMile(watchMile);
+                    }
+                    if (isStart!=null){
+                        basicInfo.setIsStart(isStart);
+                    }
+                    updateById(basicInfo);
+                }
+                ValuationData valuationData = valuationDataMapper.selectOne(new LambdaQueryWrapper<ValuationData>().eq(ValuationData::getOrderNo, orderNo));
+                if (valuationData != null) {
+                    String carLicenseLocation = (String) parse.get("carLicenseLocation");
+                    if (StringUtils.isNoneBlank(carLicenseLocation)) {
+                        valuationData.setCarLicenseLocation(carLicenseLocation);
+                    }
+                    String carColor = (String) parse.get("carColor");
+                    if (StringUtils.isNoneBlank(carColor)) {
+                        valuationData.setCarColor(carColor);
+                    }
+                    String firstPlateTime = (String) parse.get("firstPlateTime");
+                    if (StringUtils.isNoneBlank(firstPlateTime)) {
+                        valuationData.setFirstPlateTime(firstPlateTime);
+                    }
+                    valuationDataMapper.updateById(valuationData);
+                }
+                //修改riskcontrolData数据
+                RiskControlData riskControlData = riskControlDataMapper.selectOne(new LambdaQueryWrapper<RiskControlData>().eq(RiskControlData::getOrderNo, orderNo));
+                if (riskControlData!=null){
+                    Integer syxz = (Integer) parse.get("syxz");
+                    if (syxz!=null){
+                        riskControlData.setSyxz(syxz);
+                    }
+                    riskControlDataMapper.updateById(riskControlData);
+                }
+            }
+        }
+        return ResponseData.success();
     }
 }

@@ -2,19 +2,24 @@ package com.jinjike.cbs.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jinjike.cbs.mapper.CoordinateMapper;
 import com.jinjike.cbs.mapper.DataInfoMapper;
 import com.jinjike.cbs.mapper.DescsMapper;
+import com.jinjike.cbs.mapper.DetectionDataMapper;
 import com.jinjike.cbs.model.Coordinate;
 import com.jinjike.cbs.model.DataInfo;
 import com.jinjike.cbs.model.Descs;
+import com.jinjike.cbs.model.DetectionData;
 import com.jinjike.cbs.service.IDataInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +38,10 @@ public class DataInfoServiceImpl extends ServiceImpl<DataInfoMapper, DataInfo> i
     private DescsMapper descsMapper;
     @Autowired
     private CoordinateMapper coordinateMapper;
+    @Autowired
+    private DetectionDataMapper detectionDataMapper;
+    @Autowired
+    private DataInfoMapper dataInfoMapper;
 
     @Override
     public List<DataInfo> createDataInfo(Map<String, Object> detectionDataMap, Integer detectionDataId, boolean isUpdate) {
@@ -134,5 +143,37 @@ public class DataInfoServiceImpl extends ServiceImpl<DataInfoMapper, DataInfo> i
             return dataList;
         }
         return null;
+    }
+
+    @Override
+    public void delPic(String json) {
+        if (StringUtils.isNoneBlank(json)){
+            Map<String, Object> parse = (Map<String, Object>) JSONObject.parse(json);
+            String orderNo = (String) parse.get("orderNo");
+            if (StringUtils.isNoneBlank(orderNo)){
+                Integer id = (Integer) parse.get("id");
+                String delPicId = (String) parse.get("delPicId");
+                DetectionData detectionData = detectionDataMapper.selectOne(new LambdaQueryWrapper<DetectionData>().select(DetectionData::getId).eq(DetectionData::getOrderNo, orderNo));
+                if(detectionData!=null){
+                    Integer detectionDataId = detectionData.getId();
+                    DataInfo dataInfo = dataInfoMapper.selectOne(new LambdaQueryWrapper<DataInfo>().eq(DataInfo::getDetectionDataId, detectionDataId).eq(DataInfo::getId,id));
+                    if (dataInfo!=null){
+                        String picture = dataInfo.getPicture();
+                        if (StringUtils.isNoneBlank(picture)){
+                            List<String> list = Arrays.asList(picture.split(","));
+                            List<String> resultList=new ArrayList<>();
+                            for(String pic:list){
+                                if (!pic.equals(delPicId)){
+                                    resultList.add(pic);
+                                }
+                            }
+                            String joinPic = String.join(",", resultList);
+                            dataInfo.setPicture(joinPic);
+                            dataInfoMapper.updateById(dataInfo);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

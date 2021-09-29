@@ -14,7 +14,7 @@ public interface IRecordsService extends IService<Records> {
 
     ResponseData updateRecords(String json);
 
-    ResponseData updateBasicInfo(String json);
-
     ResponseData deleteRecords(String json);
+
+    ResponseData saveExcelData(String orderNo);
 }

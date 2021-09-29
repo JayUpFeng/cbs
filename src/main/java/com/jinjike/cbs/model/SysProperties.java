@@ -22,4 +22,7 @@ public class SysProperties extends Model {
     private Integer id;
     private String userId;
     private String keySecret;
+    //查博士查询接口传参的参数：1:原始价格， 2:改价价格，不传则默认为1
+    private Integer priceType;
+
 }
