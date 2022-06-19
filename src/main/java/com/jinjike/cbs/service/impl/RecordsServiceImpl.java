@@ -106,6 +106,14 @@ public class RecordsServiceImpl extends ServiceImpl<RecordsMapper, Records> impl
     @Transactional(rollbackFor = Exception.class)
     @Override
     public ResponseData getRecords(String orderNo) {
+        //从basic_info查询状态，如果是0则不允许查数据
+        BasicInfo one = basicInfoService.getOne(new LambdaQueryWrapper<BasicInfo>().select(BasicInfo::getStatus).eq(BasicInfo::getOrderNo, orderNo));
+        if (one!=null){
+            Integer status = one.getStatus();
+            if (status == 0){
+                return ResponseData.success("无法查询数据！");
+            }
+        }
         int count = recordsService.count(new LambdaQueryWrapper<Records>().eq(Records::getOrderNo, orderNo));
         //从数据库里面查询数据
         if (count > 0) {

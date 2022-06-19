@@ -125,6 +125,7 @@ public class BasicInfoServiceImpl extends ServiceImpl<BasicInfoMapper, BasicInfo
                     watchMile=(BigDecimal)watch;
                 }
                 Integer isStart = (Integer) parse.get("isStart");
+                Integer status = (Integer) parse.get("status");
                 BasicInfo basicInfo = getOne(new LambdaQueryWrapper<BasicInfo>().eq(BasicInfo::getOrderNo, orderNo));
                 if (basicInfo != null) {
                     if (StringUtils.isNoneBlank(grade)) {
@@ -141,6 +142,9 @@ public class BasicInfoServiceImpl extends ServiceImpl<BasicInfoMapper, BasicInfo
                     }
                     if (isStart!=null){
                         basicInfo.setIsStart(isStart);
+                    }
+                    if (status!=null){
+                        basicInfo.setStatus(status);
                     }
                     updateById(basicInfo);
                 }

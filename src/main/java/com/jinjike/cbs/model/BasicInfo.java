@@ -134,6 +134,10 @@ public class BasicInfo extends Model {
     private Date createTime;
     //是否正常启动:0:不正常1：正常
     private Integer isStart;
+    /**
+     * 0:不可查1:可查
+     */
+    private Integer status;
 
 
 }

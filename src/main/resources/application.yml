@@ -6,8 +6,8 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/cbs?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
+    url: jdbc:mysql://82.157.38.201:3306/cbs?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: cbs
     password: root
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -16,7 +16,7 @@ spring:
       write-dates-as-timestamps: false
   redis:
     host: 127.0.0.1
-    password: zh1234
+    password: cbs6379
     port: 6379
 mybatis-plus:
   configuration:
