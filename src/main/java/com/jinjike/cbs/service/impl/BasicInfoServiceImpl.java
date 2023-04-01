@@ -126,6 +126,7 @@ public class BasicInfoServiceImpl extends ServiceImpl<BasicInfoMapper, BasicInfo
                 }
                 Integer isStart = (Integer) parse.get("isStart");
                 Integer status = (Integer) parse.get("status");
+                String repairScore = (String) parse.get("repairScore");
                 BasicInfo basicInfo = getOne(new LambdaQueryWrapper<BasicInfo>().eq(BasicInfo::getOrderNo, orderNo));
                 if (basicInfo != null) {
                     if (StringUtils.isNoneBlank(grade)) {
@@ -136,6 +137,9 @@ public class BasicInfoServiceImpl extends ServiceImpl<BasicInfoMapper, BasicInfo
                     }
                     if (StringUtils.isNoneBlank(modelName)) {
                         basicInfo.setModelName(modelName);
+                    }
+                    if (StringUtils.isNoneBlank(repairScore)) {
+                        basicInfo.setRepairScore(repairScore);
                     }
                     if (watchMile!=null){
                         basicInfo.setWatchMile(watchMile);
